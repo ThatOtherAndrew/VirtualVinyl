@@ -1,5 +1,7 @@
 <script lang="ts">
-	let { img } = $props();
+	import PlaybackController from './PlaybackController.ts';
+
+	let { img, audio } = $props();
 
 	let rotateX = $state(0);
 	let rotateY = $state(0);
@@ -35,6 +37,12 @@
 		handleMouseMove(event);
 		handleMouseLeave(event);
 	}
+
+	$effect(() => {
+		const controller = new PlaybackController();
+		controller.load(audio).then((controller) => controller.play());
+		controller.play();
+	});
 </script>
 
 <div
