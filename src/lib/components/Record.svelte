@@ -102,6 +102,7 @@
 	});
 </script>
 
+{recordAngle}
 <div class="bg-red-500 contain-layout">
 	<div
 		onpointerdown={startDrag}
@@ -111,14 +112,54 @@
 		bind:this={record}
 		role="img"
 		aria-label="Vinyl record"
-		class="rounded-full"
+		class="rounded-full relative"
 	>
+		<!-- Record surface (rotates) -->
 		<div
-			class="aspect-square rounded-full bg-black flex justify-center items-center"
-			style="transform: perspective(1000px) rotateX({skewX}deg) rotateY({skewY}deg) rotateZ({recordAngle}rad); transition: transform 0.1s ease-out; mask-image: radial-gradient(circle, transparent 0%, transparent 3.33%, black 3.33%, black 100%); -webkit-mask-image: radial-gradient(circle, transparent 0%, transparent 3.33%, black 3.33%, black 100%);"
+			class="surface aspect-square rounded-full bg-black flex justify-center items-center"
+			style="transform: perspective(1000px) rotateX({skewX}deg) rotateY({skewY}deg) rotateZ({recordAngle}rad);"
 		>
+			<!-- Line to help show orientation -->
 			<div class="absolute w-full h-1/100 bg-gray-900"></div>
+			<!-- Record label -->
 			<div class="aspect-square rounded-full bg-[url('{img}')] bg-cover w-1/4 z-1"></div>
 		</div>
+
+		<!-- Groove light reflection (fixed to page, follows skew only) -->
+		<div
+			class="grooves absolute inset-0 rounded-full pointer-events-none"
+			style="transform: perspective(1000px) rotateX({skewX}deg) rotateY({skewY}deg);"
+		></div>
 	</div>
 </div>
+
+<style>
+	div {
+		transition: transform 0.1s ease-out;
+	}
+
+	.surface {
+		mask-image: radial-gradient(circle, transparent 0%, transparent 3.33%, black 3.33%, black 100%);
+		-webkit-mask-image: radial-gradient(
+			circle,
+			transparent 0%,
+			transparent 3.33%,
+			black 3.33%,
+			black 100%
+		);
+	}
+
+	.grooves {
+		background: repeating-radial-gradient(
+			circle at center,
+			transparent 0px,
+			transparent 6px,
+			rgba(255, 255, 255, 0.15) 6px,
+			rgba(255, 255, 255, 0.15) 8px
+		);
+		mask-image:
+			radial-gradient(circle, transparent 0%, transparent 12.5%, black 12.5%, black 50%),
+			linear-gradient(135deg, black 0%, black 20%, transparent 50%);
+		mask-composite: intersect;
+	}
+</style>
