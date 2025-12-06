@@ -11,7 +11,7 @@
 	let skewY = $state(0);
 	let recordAngle = $state(0);
 	let isDragging = $state(false);
-	let dragAngleOffset = $state(0);
+	let lastDragAngle = $state(0);
 
 	function getPointerEventMeasurements(event: PointerEvent) {
 		const rect = record.getBoundingClientRect();
@@ -56,7 +56,7 @@
 	function startDrag(event: PointerEvent) {
 		console.log('le dragge');
 		isDragging = true;
-		dragAngleOffset = getPointerEventMeasurements(event).angle - recordAngle;
+		lastDragAngle = getPointerEventMeasurements(event).angle;
 		window.addEventListener('pointermove', drag);
 		window.addEventListener('pointerup', endDrag, { once: true });
 		drag(event);
@@ -64,6 +64,20 @@
 
 	function drag(event: PointerEvent) {
 		const { dx, dy, distance, angle } = getPointerEventMeasurements(event);
+
+		// Calculate the change in angle, handling wrap-around
+		let deltaAngle = angle - lastDragAngle;
+
+		// Unwrap: if the difference is > π, we crossed the boundary
+		if (deltaAngle > Math.PI) {
+			deltaAngle -= 2 * Math.PI;
+		} else if (deltaAngle < -Math.PI) {
+			deltaAngle += 2 * Math.PI;
+		}
+
+		// Accumulate the change (allows continuous rotation beyond [-π, π])
+		recordAngle += deltaAngle;
+		lastDragAngle = angle;
 
 		// exaggerated skew
 		console.log(distance);
@@ -74,9 +88,6 @@
 			skewX = 0;
 			skewY = 0;
 		}
-
-		// rotate record when dragged
-		recordAngle = angle - dragAngleOffset;
 	}
 
 	function endDrag(event: PointerEvent) {
@@ -90,10 +101,6 @@
 		controller.load(audio).then((controller) => controller.play());
 	});
 </script>
-
-<div>
-	dragAngleOffset: {dragAngleOffset}
-</div>
 
 <div class="bg-red-500 contain-layout">
 	<div
