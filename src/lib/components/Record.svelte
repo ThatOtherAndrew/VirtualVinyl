@@ -56,6 +56,7 @@
 	function startDrag(event: PointerEvent) {
 		console.log('le dragge');
 		isDragging = true;
+		dragAngleOffset = getPointerEventMeasurements(event).angle - recordAngle;
 		window.addEventListener('pointermove', drag);
 		window.addEventListener('pointerup', endDrag, { once: true });
 		drag(event);
@@ -93,21 +94,24 @@
 <div>
 	dragAngleOffset: {dragAngleOffset}
 </div>
-<div
-	onpointerdown={startDrag}
-	onpointerup={endDrag}
-	onpointermove={hoverSkew}
-	onpointerleave={resetHoverSkew}
-	bind:this={record}
-	role="img"
-	aria-label="Vinyl record"
-	class="rounded-full"
->
+
+<div class="bg-red-500 contain-layout">
 	<div
-		class="aspect-square rounded-full bg-black flex justify-center items-center"
-		style="transform: rotateZ({recordAngle}rad) perspective(1000px) rotateX({skewX}deg) rotateY({skewY}deg); transition: transform 0.1s ease-out; mask-image: radial-gradient(circle, transparent 0%, transparent 3.33%, black 3.33%, black 100%); -webkit-mask-image: radial-gradient(circle, transparent 0%, transparent 3.33%, black 3.33%, black 100%);"
+		onpointerdown={startDrag}
+		onpointerup={endDrag}
+		onpointermove={hoverSkew}
+		onpointerleave={resetHoverSkew}
+		bind:this={record}
+		role="img"
+		aria-label="Vinyl record"
+		class="rounded-full"
 	>
-		<div class="absolute w-full h-1/100 bg-gray-900"></div>
-		<div class="aspect-square rounded-full bg-[url('{img}')] bg-cover w-1/4 z-1"></div>
+		<div
+			class="aspect-square rounded-full bg-black flex justify-center items-center"
+			style="transform: perspective(1000px) rotateX({skewX}deg) rotateY({skewY}deg) rotateZ({recordAngle}rad); transition: transform 0.1s ease-out; mask-image: radial-gradient(circle, transparent 0%, transparent 3.33%, black 3.33%, black 100%); -webkit-mask-image: radial-gradient(circle, transparent 0%, transparent 3.33%, black 3.33%, black 100%);"
+		>
+			<div class="absolute w-full h-1/100 bg-gray-900"></div>
+			<div class="aspect-square rounded-full bg-[url('{img}')] bg-cover w-1/4 z-1"></div>
+		</div>
 	</div>
 </div>
