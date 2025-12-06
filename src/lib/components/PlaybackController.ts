@@ -1,6 +1,6 @@
 export default class PlaybackController {
 	private readonly context: AudioContext;
-	private source: AudioBufferSourceNode;
+	private source: AudioBufferSourceNode | undefined;
 
 	public constructor() {
 		this.context = new AudioContext();
@@ -17,6 +17,6 @@ export default class PlaybackController {
 	}
 
 	public play() {
-		this.source.start();
+		this.source?.start();
 	}
 }
