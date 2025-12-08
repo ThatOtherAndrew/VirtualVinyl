@@ -9,8 +9,9 @@
 	let record: HTMLDivElement;
 	let skewX = $state(0);
 	let skewY = $state(0);
-	let recordAngle = $state(0);
+	let recordPosition = $state(0);
 	let isDragging = $state(false);
+	let dragDelta = $state(0);
 	let lastDragAngle = $state(0);
 	let lastTick: number;
 
@@ -56,6 +57,7 @@
 
 	function startDrag(event: PointerEvent) {
 		isDragging = true;
+		dragDelta = 0;
 		lastDragAngle = getPointerEventMeasurements(event).angle;
 		window.addEventListener('pointermove', drag);
 		window.addEventListener('pointerup', endDrag, { once: true });
@@ -76,7 +78,8 @@
 		}
 
 		// Accumulate the change (allows continuous rotation beyond [-π, π])
-		recordAngle += deltaAngle;
+		dragDelta += deltaAngle;
+		recordPosition += deltaAngle;
 		lastDragAngle = angle;
 
 		// exaggerated skew
@@ -101,7 +104,7 @@
 		lastTick = now;
 
 		if (!isDragging) {
-			recordAngle += deltaTime / 500;
+			recordPosition += deltaTime / 500;
 		}
 	}
 
@@ -113,7 +116,6 @@
 	});
 </script>
 
-<p>{recordAngle}</p>
 <div class="bg-red-500 contain-layout">
 	<div
 		onpointerdown={startDrag}
@@ -128,7 +130,7 @@
 		<!-- Record surface (rotates) -->
 		<div
 			class="surface aspect-square rounded-full bg-black flex justify-center items-center"
-			style="transform: perspective(1000px) rotateX({skewX}deg) rotateY({skewY}deg) rotateZ({recordAngle}rad);"
+			style="transform: perspective(1000px) rotateX({skewX}deg) rotateY({skewY}deg) rotateZ({recordPosition}rad);"
 		>
 			<!-- Line to help show orientation -->
 			<div class="absolute w-full h-1/50 bg-gray-900"></div>
@@ -146,6 +148,12 @@
 		></div>
 	</div>
 </div>
+
+<!-- Debug info -->
+<p>recordAngle: {recordPosition}</p>
+{#if isDragging}
+	<p>dragDelta: {dragDelta}</p>
+{/if}
 
 <style>
 	div {
