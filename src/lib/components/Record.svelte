@@ -136,25 +136,27 @@
 		aria-label="Vinyl record"
 		class="rounded-full relative touch-none"
 	>
-		<!-- Record surface (rotates) -->
 		<div
-			class="surface aspect-square rounded-full bg-black flex justify-center items-center"
-			style="transform: perspective(1000px) rotateX({skewX}deg) rotateY({skewY}deg) rotateZ({recordPosition}rad);"
-		>
-			<!-- Line to help show orientation -->
-			<div class="absolute w-full h-1/50 bg-gray-900"></div>
-			<!-- Record label -->
-			<div
-				class="aspect-square rounded-full bg-cover w-1/4 z-1"
-				style="background-image: url('{img}')"
-			></div>
-		</div>
-
-		<!-- Groove light reflection (fixed to page, follows skew only) -->
-		<div
-			class="grooves absolute inset-0 rounded-full pointer-events-none"
+			class="skewable pointer-events-none"
 			style="transform: perspective(1000px) rotateX({skewX}deg) rotateY({skewY}deg);"
-		></div>
+		>
+			<!-- Record surface (rotates) -->
+			<div
+				class="surface aspect-square rounded-full bg-black flex justify-center items-center"
+				style="transform: rotateZ({recordPosition}rad);"
+			>
+				<!-- Line to help show orientation -->
+				<div class="absolute w-full h-1/50 bg-gray-900"></div>
+				<!-- Record label -->
+				<div
+					class="aspect-square rounded-full bg-cover w-1/4 z-1"
+					style="background-image: url('{img}')"
+				></div>
+			</div>
+
+			<!-- Groove light reflection (fixed to page, follows skew only) -->
+			<div class="grooves absolute inset-0 rounded-full pointer-events-none"></div>
+		</div>
 	</div>
 </div>
 
@@ -165,7 +167,7 @@
 {/if}
 
 <style>
-	div {
+	.skewable {
 		transition: transform 0.1s ease-out;
 	}
 
