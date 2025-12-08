@@ -12,6 +12,7 @@
 	let recordAngle = $state(0);
 	let isDragging = $state(false);
 	let lastDragAngle = $state(0);
+	let lastTick: number;
 
 	function getPointerEventMeasurements(event: PointerEvent) {
 		const rect = record.getBoundingClientRect();
@@ -94,9 +95,21 @@
 		window.removeEventListener('pointermove', drag);
 	}
 
+	function tick() {
+		const now = performance.now();
+		const deltaTime = now - lastTick;
+		lastTick = now;
+
+		if (!isDragging) {
+			recordAngle += deltaTime / 500;
+		}
+	}
+
 	$effect(() => {
 		const controller = new PlaybackController();
 		controller.load(audio).then((controller) => controller.play());
+		lastTick = performance.now();
+		setInterval(tick, 10);
 	});
 </script>
 
