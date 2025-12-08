@@ -98,7 +98,7 @@
 		window.removeEventListener('pointermove', drag);
 	}
 
-	function tick() {
+	function tick(controller: PlaybackController) {
 		const now = performance.now();
 		const deltaTime = now - lastTick;
 		lastTick = now;
@@ -106,13 +106,20 @@
 		if (!isDragging) {
 			recordPosition += deltaTime / 500;
 		}
+
+		controller.scrubTo(recordPosition, deltaTime);
 	}
 
-	$effect(() => {
+	$effect(async () => {
+		// audio init stuff
+		const response = await fetch(audio);
+		const buffer = await response.arrayBuffer();
 		const controller = new PlaybackController();
-		controller.load(audio).then((controller) => controller.play());
+		controller.load(buffer).then((controller) => controller.play());
+
+		// main tick loop
 		lastTick = performance.now();
-		setInterval(tick, 10);
+		setInterval(() => tick(controller), 10);
 	});
 </script>
 
