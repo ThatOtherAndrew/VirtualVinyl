@@ -1,6 +1,8 @@
+import { ReversibleAudioBufferSourceNode } from 'simple-reversible-audio-buffer-source-node';
+
 export default class PlaybackController {
 	private readonly context: AudioContext;
-	private source: AudioBufferSourceNode | undefined;
+	private source: ReversibleAudioBufferSourceNode | undefined;
 	private lastPosition = 0;
 
 	public constructor() {
@@ -8,10 +10,10 @@ export default class PlaybackController {
 	}
 
 	public async load(audio: ArrayBuffer): Promise<PlaybackController> {
-		this.source = this.context.createBufferSource();
+		this.source = new ReversibleAudioBufferSourceNode(this.context);
 		this.source.buffer = await this.context.decodeAudioData(audio);
 		this.source.connect(this.context.destination);
-		this.source.playbackRate.value = 0;
+		this.source.playbackRate(0);
 
 		return this;
 	}
@@ -23,10 +25,10 @@ export default class PlaybackController {
 	public scrubTo(position: number, duration: number) {
 		if (!this.source || duration <= 0) return;
 
-		const speed = 100 * (position - this.lastPosition / duration);
+		const speed = (500 * (position - this.lastPosition)) / duration;
 		console.log(speed);
 		this.lastPosition = position;
 
-		this.source.playbackRate.setTargetAtTime(speed, this.context.currentTime, 0.05);
+		this.source.playbackRate(speed);
 	}
 }

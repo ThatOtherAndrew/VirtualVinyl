@@ -115,7 +115,9 @@
 		const response = await fetch(audio);
 		const buffer = await response.arrayBuffer();
 		const controller = new PlaybackController();
-		controller.load(buffer).then((controller) => controller.play());
+
+		await controller.load(buffer);
+		controller.play();
 
 		// main tick loop
 		lastTick = performance.now();
