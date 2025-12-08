@@ -54,7 +54,6 @@
 	}
 
 	function startDrag(event: PointerEvent) {
-		console.log('le dragge');
 		isDragging = true;
 		lastDragAngle = getPointerEventMeasurements(event).angle;
 		window.addEventListener('pointermove', drag);
@@ -80,7 +79,6 @@
 		lastDragAngle = angle;
 
 		// exaggerated skew
-		console.log(distance);
 		if (distance > 0) {
 			skewY = (dx / distance) * DRAG_SKEW_STRENGTH;
 			skewX = -(dy / distance) * DRAG_SKEW_STRENGTH;
@@ -102,7 +100,7 @@
 	});
 </script>
 
-{recordAngle}
+<p>{recordAngle}</p>
 <div class="bg-red-500 contain-layout">
 	<div
 		onpointerdown={startDrag}
@@ -112,7 +110,7 @@
 		bind:this={record}
 		role="img"
 		aria-label="Vinyl record"
-		class="rounded-full relative"
+		class="rounded-full relative touch-none"
 	>
 		<!-- Record surface (rotates) -->
 		<div
@@ -122,7 +120,10 @@
 			<!-- Line to help show orientation -->
 			<div class="absolute w-full h-1/100 bg-gray-900"></div>
 			<!-- Record label -->
-			<div class="aspect-square rounded-full bg-[url('{img}')] bg-cover w-1/4 z-1"></div>
+			<div
+				class="aspect-square rounded-full bg-cover w-1/4 z-1"
+				style="background-image: url('{img}')"
+			></div>
 		</div>
 
 		<!-- Groove light reflection (fixed to page, follows skew only) -->
