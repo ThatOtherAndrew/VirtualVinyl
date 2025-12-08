@@ -118,7 +118,7 @@
 			style="transform: perspective(1000px) rotateX({skewX}deg) rotateY({skewY}deg) rotateZ({recordAngle}rad);"
 		>
 			<!-- Line to help show orientation -->
-			<div class="absolute w-full h-1/100 bg-gray-900"></div>
+			<div class="absolute w-full h-1/50 bg-gray-900"></div>
 			<!-- Record label -->
 			<div
 				class="aspect-square rounded-full bg-cover w-1/4 z-1"
