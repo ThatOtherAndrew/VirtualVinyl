@@ -5,8 +5,13 @@ import { defineConfig } from 'vite';
 import { sveltePhosphorOptimize } from 'phosphor-svelte/vite';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit(), sveltePhosphorOptimize(), devtoolsJson()],
-	server: {
-		allowedHosts: ['tunnel.thatother.dev']
-	}
+    plugins: [
+        tailwindcss(),
+        sveltekit(),
+        sveltePhosphorOptimize(),
+        devtoolsJson(),
+    ],
+    server: {
+        allowedHosts: ['tunnel.thatother.dev'],
+    },
 });

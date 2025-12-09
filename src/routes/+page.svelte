@@ -1,5 +1,5 @@
 <script>
-	import RecordPlayer from '$lib/components/RecordPlayer.svelte';
+    import RecordPlayer from '$lib/components/RecordPlayer.svelte';
 </script>
 
 <RecordPlayer />
