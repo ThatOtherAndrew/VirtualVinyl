@@ -1,6 +1,5 @@
 <script>
-	import audio from '$lib/assets/epic_molehill.wav';
-	import Record from '$lib/components/Record.svelte';
+	import RecordPlayer from '$lib/components/RecordPlayer.svelte';
 </script>
 
-<Record img="https://picsum.photos/200" {audio} />
+<RecordPlayer />

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import PlaybackController from './PlaybackController.ts';
 
-	let { img, audio } = $props();
+	let { speed = $bindable(), img, audio } = $props();
 
 	const HOVER_SKEW_STRENGTH = 1.5;
 	const DRAG_SKEW_STRENGTH = 5;
@@ -104,13 +104,13 @@
 		lastTick = now;
 
 		if (!isDragging) {
-			recordPosition += deltaTime / 500;
+			recordPosition += deltaTime * (speed / 500);
 		}
 
 		controller.scrubTo(recordPosition, deltaTime);
 	}
 
-	$effect(async () => {
+	async function load() {
 		// audio init stuff
 		const response = await fetch(audio);
 		const buffer = await response.arrayBuffer();
@@ -122,6 +122,10 @@
 		// main tick loop
 		lastTick = performance.now();
 		setInterval(() => tick(controller), 10);
+	}
+
+	$effect(() => {
+		load();
 	});
 </script>
 
