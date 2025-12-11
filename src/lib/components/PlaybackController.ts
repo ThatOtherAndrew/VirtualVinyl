@@ -1,7 +1,10 @@
+import { browser } from '$app/environment';
 import vinylProcessorUrl from '$lib/vinyl-processor.ts?url';
 
 export default class PlaybackController {
-    private readonly context = new AudioContext();
+    private readonly context = (browser
+        ? new AudioContext()
+        : undefined) as AudioContext;
     private node: AudioWorkletNode | undefined;
     private lastPosition = 0;
     public currentFrame = 0;

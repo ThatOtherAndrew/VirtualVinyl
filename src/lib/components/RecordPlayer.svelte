@@ -6,7 +6,10 @@
 
     let speed = $state(0);
     const controller = new PlaybackController();
-    controller.loadFromUrl(audio);
+
+    $effect(() => {
+        controller.loadFromUrl(audio);
+    });
 </script>
 
 <div>
