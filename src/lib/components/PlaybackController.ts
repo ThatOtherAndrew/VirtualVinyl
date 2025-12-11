@@ -1,20 +1,12 @@
 import vinylProcessorUrl from '$lib/vinyl-processor.ts?url';
 
 export default class PlaybackController {
-    private readonly context: AudioContext;
+    private readonly context = new AudioContext();
     private node: AudioWorkletNode | undefined;
     private lastPosition = 0;
     public currentFrame = 0;
 
-    public constructor() {
-        this.context = new AudioContext();
-    }
-
     public async load(audio: ArrayBuffer): Promise<PlaybackController> {
-        if (this.context.state === 'suspended') {
-            await this.context.resume();
-        }
-
         try {
             await this.context.audioWorklet.addModule(vinylProcessorUrl);
         } catch (e) {
@@ -41,6 +33,12 @@ export default class PlaybackController {
         return this;
     }
 
+    public async loadFromUrl(url: string): Promise<PlaybackController> {
+        const response = await fetch(url);
+        const buffer = await response.arrayBuffer();
+        return await this.load(buffer);
+    }
+
     private getMultiChannelBuffer(audioBuffer: AudioBuffer): Float32Array[] {
         const channels: Float32Array[] = [];
         for (let i = 0; i < audioBuffer.numberOfChannels; i++) {
@@ -49,9 +47,9 @@ export default class PlaybackController {
         return channels;
     }
 
-    public play() {
+    public async resumePlayback() {
         if (this.context.state === 'suspended') {
-            this.context.resume();
+            await this.context.resume();
         }
     }
 

@@ -1,7 +1,15 @@
 <script lang="ts">
-    import PlaybackController from './PlaybackController.ts';
+    import type PlaybackController from './PlaybackController.ts';
 
-    let { speed = $bindable(), img, audio } = $props();
+    let {
+        controller,
+        speed = $bindable(),
+        img,
+    }: {
+        controller: PlaybackController;
+        speed: number;
+        img: string;
+    } = $props();
 
     const HOVER_SKEW_STRENGTH = 1.5;
     const DRAG_SKEW_STRENGTH = 5;
@@ -59,8 +67,14 @@
         isDragging = true;
         dragDelta = 0;
         lastDragAngle = getPointerEventMeasurements(event).angle;
+
+        // attach listeners for spinning the record
         window.addEventListener('pointermove', drag);
         window.addEventListener('pointerup', endDrag, { once: true });
+
+        // resume audio context if needed
+        controller.resumePlayback();
+
         drag(event);
     }
 
@@ -98,7 +112,7 @@
         window.removeEventListener('pointermove', drag);
     }
 
-    function tick(controller: PlaybackController) {
+    function tick() {
         const now = performance.now();
         const deltaTime = now - lastTick;
         lastTick = now;
@@ -110,22 +124,9 @@
         controller.scrubTo(recordPosition, deltaTime);
     }
 
-    async function load() {
-        // audio init stuff
-        const response = await fetch(audio);
-        const buffer = await response.arrayBuffer();
-        const controller = new PlaybackController();
-
-        await controller.load(buffer);
-        controller.play();
-
-        // main tick loop
-        lastTick = performance.now();
-        setInterval(() => tick(controller), 10);
-    }
-
     $effect(() => {
-        load();
+        lastTick = performance.now();
+        setInterval(() => tick(), 10);
     });
 </script>
 

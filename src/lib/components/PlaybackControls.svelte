@@ -6,8 +6,12 @@
         Rewind,
         FastForward,
     } from 'phosphor-svelte';
+    import type PlaybackController from './PlaybackController';
 
-    let { speed = $bindable() } = $props();
+    let {
+        controller,
+        speed = $bindable(),
+    }: { controller: PlaybackController; speed: number } = $props();
 
     function rewind() {
         speed = -4;
@@ -30,7 +34,10 @@
     }
 </script>
 
-<div class="bg-gray-300 w-fit h-20 p-2 rounded-md">
+<div
+    onpointerdown={() => controller.resumePlayback()}
+    class="bg-gray-300 w-fit h-20 p-2 rounded-md"
+>
     <IconContext values={{ size: '100%', weight: 'fill', color: 'silver' }}>
         <button onpointerdown={rewind} onpointerup={reset}>
             <Rewind />
