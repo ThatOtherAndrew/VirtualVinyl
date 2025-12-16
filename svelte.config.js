@@ -9,6 +9,11 @@ const config = {
     kit: {
         // https://svelte.dev/docs/kit/adapters
         adapter: adapter(),
+
+        // https://svelte.dev/docs/kit/adapter-static#GitHub-Pages
+        paths: {
+            base: process.argv.includes('dev') ? '' : process.env.BASE_PATH,
+        },
     },
 };
 

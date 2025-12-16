@@ -5,8 +5,6 @@ import { defineConfig } from 'vite';
 import { sveltePhosphorOptimize } from 'phosphor-svelte/vite';
 
 export default defineConfig({
-    base: '/VirtualVinyl/',
-
     plugins: [
         tailwindcss(),
         sveltekit(),

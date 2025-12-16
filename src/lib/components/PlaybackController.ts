@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import vinylProcessorUrl from '$lib/vinyl-processor.ts?url';
+import vinylProcessorUrl from '$lib/vinyl-processor.ts?worker&url';
 
 export default class PlaybackController {
     private readonly context = (browser
