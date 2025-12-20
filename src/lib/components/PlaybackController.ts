@@ -1,13 +1,17 @@
-import { browser } from '$app/environment';
 import vinylProcessorUrl from '$lib/vinyl-processor.ts?worker&url';
 
 export default class PlaybackController {
-    private readonly context = (browser
-        ? new AudioContext()
-        : undefined) as AudioContext;
+    private _context: AudioContext | undefined;
     private node: AudioWorkletNode | undefined;
     private lastPosition = 0;
     public currentFrame = 0;
+
+    private get context(): AudioContext {
+        if (!this._context) {
+            this._context = new AudioContext();
+        }
+        return this._context;
+    }
 
     public async load(audio: ArrayBuffer): Promise<PlaybackController> {
         try {
