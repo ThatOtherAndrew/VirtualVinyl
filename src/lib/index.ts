@@ -1,1 +1,2 @@
-export { default as Record } from "./components/Record.svelte";
+export { default as VinylRecord } from './components/VinylRecord.svelte';
+export { default as PlaybackController } from './components/PlaybackController';
