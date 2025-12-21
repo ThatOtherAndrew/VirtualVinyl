@@ -1,3 +1,5 @@
+import workerCode from '../vinyl-processor.js?raw';
+
 export default class PlaybackController {
     private _context: AudioContext | undefined;
     private node: AudioWorkletNode | undefined;
@@ -12,12 +14,15 @@ export default class PlaybackController {
     }
 
     public async load(audio: ArrayBuffer): Promise<PlaybackController> {
-        const vinylProcessorUrl = new URL('../vinyl-processor.js', import.meta.url).href;
+        const blob = new Blob([workerCode], { type: 'application/javascript' });
+        const vinylProcessorUrl = URL.createObjectURL(blob);
 
         try {
             await this.context.audioWorklet.addModule(vinylProcessorUrl);
         } catch (e) {
             console.error('Failed to load module', e);
+        } finally {
+            URL.revokeObjectURL(vinylProcessorUrl);
         }
 
         this.node = new AudioWorkletNode(this.context, 'vinyl-processor');

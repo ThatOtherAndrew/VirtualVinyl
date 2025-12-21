@@ -1,9 +1,8 @@
 class VinylProcessor extends AudioWorkletProcessor {
-    private buffer: Float32Array[] | null = null;
-    private currentFrame = 0;
-
-    public constructor() {
+    constructor() {
         super();
+        this.buffer = null;
+        this.currentFrame = 0;
         this.port.onmessage = (event) => {
             if (event.data.type === 'load-buffer') {
                 this.buffer = event.data.buffer;
@@ -13,7 +12,7 @@ class VinylProcessor extends AudioWorkletProcessor {
         };
     }
 
-    public static get parameterDescriptors() {
+    static get parameterDescriptors() {
         return [
             {
                 name: 'playbackRate',
@@ -25,11 +24,7 @@ class VinylProcessor extends AudioWorkletProcessor {
         ];
     }
 
-    public process(
-        _inputs: Float32Array[][],
-        outputs: Float32Array[][],
-        parameters: Record<string, Float32Array>,
-    ) {
+    process(_inputs, outputs, parameters) {
         const output = outputs[0];
         const playbackRateParam = parameters.playbackRate;
 
@@ -62,8 +57,7 @@ class VinylProcessor extends AudioWorkletProcessor {
             }
         }
 
-        // Report position occasionally (e.g. every 100 blocks / 300ms???)
-        // gods this is such a hack
+        // Report position occasionally
         this.port.postMessage({ type: 'position', frame: this.currentFrame });
 
         return true;
