@@ -1,5 +1,3 @@
-import vinylProcessorUrl from '../vinyl-processor.js?worker&url';
-
 export default class PlaybackController {
     private _context: AudioContext | undefined;
     private node: AudioWorkletNode | undefined;
@@ -14,6 +12,8 @@ export default class PlaybackController {
     }
 
     public async load(audio: ArrayBuffer): Promise<PlaybackController> {
+        const vinylProcessorUrl = new URL('../vinyl-processor.js', import.meta.url).href;
+
         try {
             await this.context.audioWorklet.addModule(vinylProcessorUrl);
         } catch (e) {
