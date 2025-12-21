@@ -130,7 +130,7 @@
     });
 </script>
 
-<div class="bg-red-500 contain-layout">
+<div class="contain-layout">
     <div
         onpointerdown={startDrag}
         onpointerup={endDrag}
@@ -166,12 +166,6 @@
         </div>
     </div>
 </div>
-
-<!-- Debug info -->
-<p>recordAngle: {recordPosition}</p>
-{#if isDragging}
-    <p>dragDelta: {dragDelta}</p>
-{/if}
 
 <style>
     .skewable {
