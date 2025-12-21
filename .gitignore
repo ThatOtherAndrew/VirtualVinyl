@@ -1,5 +1,6 @@
 node_modules
 dist
+src/lib/vinyl-processor-string.ts
 
 # Output
 .output

@@ -4,15 +4,16 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
+    "bundle-worker": "node scripts/bundle-worker.js",
+    "dev": "node scripts/bundle-worker.js && vite dev",
+    "build": "node scripts/bundle-worker.js && vite build",
     "preview": "vite preview",
-    "prepare": "svelte-kit sync && svelte-package",
+    "prepare": "node scripts/bundle-worker.js && svelte-kit sync && svelte-package",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "format": "prettier --write .",
     "lint": "prettier --check . && eslint .",
-    "package": "svelte-package"
+    "package": "node scripts/bundle-worker.js && svelte-package"
   },
   "devDependencies": {
     "@eslint/compat": "^1.4.0",

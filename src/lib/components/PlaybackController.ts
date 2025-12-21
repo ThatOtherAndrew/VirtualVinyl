@@ -1,4 +1,4 @@
-import workerCode from '../vinyl-processor.js?raw';
+import workerCode from '../vinyl-processor-string';
 
 export default class PlaybackController {
     private _context: AudioContext | undefined;
