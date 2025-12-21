@@ -1,4 +1,4 @@
-import vinylProcessorUrl from '$lib/vinyl-processor.ts?worker&url';
+import vinylProcessorUrl from '../vinyl-processor.js?worker&url';
 
 export default class PlaybackController {
     private _context: AudioContext | undefined;
