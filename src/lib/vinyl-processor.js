@@ -3,11 +3,15 @@ class VinylProcessor extends AudioWorkletProcessor {
         super();
         this.buffer = null;
         this.currentFrame = 0;
+        this.loop = false;
         this.port.onmessage = (event) => {
             if (event.data.type === 'load-buffer') {
                 this.buffer = event.data.buffer;
+                this.loop = !!event.data.loop;
             } else if (event.data.type === 'set-position') {
                 this.currentFrame = event.data.frame;
+            } else if (event.data.type === 'set-loop') {
+                this.loop = event.data.loop;
             }
         };
     }
@@ -43,16 +47,32 @@ class VinylProcessor extends AudioWorkletProcessor {
             this.currentFrame += rate;
 
             // boundary checks / looping
-            if (this.currentFrame < 0) this.currentFrame = 0;
-            if (this.currentFrame > bufferLength - 2)
-                this.currentFrame = bufferLength - 2;
+            if (this.loop) {
+                this.currentFrame =
+                    ((this.currentFrame % bufferLength) + bufferLength) %
+                    bufferLength;
+            } else {
+                if (this.currentFrame < 0) this.currentFrame = 0;
+                if (this.currentFrame > bufferLength - 2)
+                    this.currentFrame = bufferLength - 2;
+            }
 
             const index = Math.floor(this.currentFrame);
             const frac = this.currentFrame - index;
 
             for (let channel = 0; channel < channelCount; channel++) {
+                if (index >= bufferLength) continue;
+
                 const sample1 = this.buffer[channel][index];
-                const sample2 = this.buffer[channel][index + 1];
+
+                let nextIndex = index + 1;
+                if (this.loop) {
+                    if (nextIndex >= bufferLength) nextIndex = 0;
+                } else if (nextIndex >= bufferLength) {
+                    nextIndex = bufferLength - 1;
+                }
+
+                const sample2 = this.buffer[channel][nextIndex];
                 output[channel][i] = sample1 + (sample2 - sample1) * frac;
             }
         }

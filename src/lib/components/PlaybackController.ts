@@ -13,7 +13,7 @@ export default class PlaybackController {
         return this._context;
     }
 
-    public async load(audio: ArrayBuffer): Promise<PlaybackController> {
+    public async load(audio: ArrayBuffer, loop: boolean = false): Promise<PlaybackController> {
         const blob = new Blob([workerCode], { type: 'application/javascript' });
         const vinylProcessorUrl = URL.createObjectURL(blob);
 
@@ -38,6 +38,7 @@ export default class PlaybackController {
         this.node.port.postMessage({
             type: 'load-buffer',
             buffer: this.getMultiChannelBuffer(audioBuffer),
+            loop,
         });
 
         this.node.connect(this.context.destination);
@@ -45,10 +46,16 @@ export default class PlaybackController {
         return this;
     }
 
-    public async loadFromUrl(url: string): Promise<PlaybackController> {
+    public async loadFromUrl(url: string, loop: boolean = false): Promise<PlaybackController> {
         const response = await fetch(url);
         const buffer = await response.arrayBuffer();
-        return await this.load(buffer);
+        return await this.load(buffer, loop);
+    }
+
+    public setLoop(loop: boolean) {
+        if (this.node) {
+            this.node.port.postMessage({ type: 'set-loop', loop });
+        }
     }
 
     private getMultiChannelBuffer(audioBuffer: AudioBuffer): Float32Array[] {
