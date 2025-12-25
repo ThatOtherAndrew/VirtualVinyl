@@ -57,8 +57,17 @@
 <style>
     button {
         height: 100%;
-        background-color: #333;
         border-radius: 20%;
         padding: 0.5rem;
+        background-color: #333;
+        transition: background-color 0.15s;
+    }
+
+    button:hover {
+        background-color: #444;
+    }
+
+    button:active {
+        background-color: #111;
     }
 </style>
