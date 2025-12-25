@@ -1,38 +1,50 @@
-# sv
+# Virtual Vinyl
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A [Svelte](https://svelte.dev/) and [Tailwind](https://tailwindcss.com/) library for analogue vinyl record emulation with an interactive UI component.
 
-## Creating a project
+## Usage
 
-If you're seeing this, you've probably already done this step. Congrats!
+> [!TIP]
+> For a simple example project using this library, check out [Jockey](https://github.com/ThatOtherAndrew/Jockey) ([live demo](https://thatotherandrew.github.io/Jockey/)).
 
-```sh
-# create a new project in the current directory
-npx sv create
+Install the package via `npm` or another package manager of choice:
 
-# create a new project in my-app
-npx sv create my-app
+```shell
+npm i github:ThatOtherAndrew/VirtualVinyl
 ```
 
-## Developing
+> [!WARNING]
+> If you are using `bun`, ensure that the postinstall script is run:
+> ```shell
+> bun pm trust virtual-vinyl
+> ```
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Include in your TailwindCSS file (e.g. `/src/routes/layout.css` if using [SvelteKit](https://svelte.dev/docs/kit/introduction)):
 
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```css
+/* relative path to node_modules/virtual-vinyl */
+@source '../../node_modules/virtual-vinyl';
 ```
 
-## Building
+Import the `VinylRecord` component, and `PlaybackController` class. A minimal example is shown below:
 
-To create a production version of your app:
+```svelte
+<script>
+    import { VinylRecord, PlaybackController } from 'virtual-vinyl';
 
-```sh
-npm run build
+    let speed = $state(0);
+    const controller = new PlaybackController();
+    const audioUrl = 'https://upload.wikimedia.org/wikipedia/commons/0/08/Ars_Niemo_-_Small_Talk_Build_IV.ogg';
+
+    $effect(() => {
+        controller.loadFromUrl(audioUrl);
+    });
+    
+    function playPause() {
+        speed = speed === 1 ? 0 : 1;
+    }
+</script>
+
+<VinylRecord {controller} bind:speed img="https://picsum.photos/200" />
+<button onclick={playPause}>Play/Pause</button>
 ```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
