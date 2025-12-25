@@ -5,6 +5,7 @@ export default class PlaybackController {
     private node: AudioWorkletNode | undefined;
     private lastPosition = 0;
     public currentFrame = 0;
+    private isModuleLoaded = false;
 
     private get context(): AudioContext {
         if (!this._context) {
@@ -14,24 +15,32 @@ export default class PlaybackController {
     }
 
     public async load(audio: ArrayBuffer, loop: boolean = false): Promise<PlaybackController> {
-        const blob = new Blob([workerCode], { type: 'application/javascript' });
-        const vinylProcessorUrl = URL.createObjectURL(blob);
+        if (!this.isModuleLoaded) {
+            const blob = new Blob([workerCode], { type: 'application/javascript' });
+            const vinylProcessorUrl = URL.createObjectURL(blob);
 
-        try {
-            await this.context.audioWorklet.addModule(vinylProcessorUrl);
-        } catch (e) {
-            console.error('Failed to load module', e);
-        } finally {
-            URL.revokeObjectURL(vinylProcessorUrl);
+            try {
+                await this.context.audioWorklet.addModule(vinylProcessorUrl);
+                this.isModuleLoaded = true;
+            } catch (e) {
+                console.error('Failed to load module', e);
+                throw e;
+            } finally {
+                URL.revokeObjectURL(vinylProcessorUrl);
+            }
         }
 
-        this.node = new AudioWorkletNode(this.context, 'vinyl-processor');
+        if (!this.node) {
+            this.node = new AudioWorkletNode(this.context, 'vinyl-processor');
 
-        this.node.port.onmessage = (event) => {
-            if (event.data.type === 'position') {
-                this.currentFrame = event.data.frame;
-            }
-        };
+            this.node.port.onmessage = (event) => {
+                if (event.data.type === 'position') {
+                    this.currentFrame = event.data.frame;
+                }
+            };
+
+            this.node.connect(this.context.destination);
+        }
 
         const audioBuffer = await this.context.decodeAudioData(audio);
 
@@ -41,7 +50,13 @@ export default class PlaybackController {
             loop,
         });
 
-        this.node.connect(this.context.destination);
+        // Reset state for new track
+        this.node.port.postMessage({
+            type: 'set-position',
+            frame: 0,
+        });
+        this.currentFrame = 0;
+        this.lastPosition = 0;
 
         return this;
     }
