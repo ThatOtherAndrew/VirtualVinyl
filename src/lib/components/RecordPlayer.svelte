@@ -1,5 +1,5 @@
 <script lang="ts">
-    import audio from '$lib/assets/epic_molehill.wav';
+    import audio from '$lib/assets/epic_molehill.mp3';
     import VinylRecord from '$lib/components/VinylRecord.svelte';
     import PlaybackControls from '$lib/components/PlaybackControls.svelte';
     import PlaybackController from './PlaybackController.ts';
