@@ -36,7 +36,7 @@
 
 <div
     onpointerdown={() => controller.resumePlayback()}
-    class="bg-gray-300 w-fit h-20 p-2 rounded-md"
+    class="bg-gray-500 w-fit h-20 p-2 rounded-md"
 >
     <IconContext values={{ size: '100%', weight: 'fill', color: 'silver' }}>
         <button onpointerdown={rewind} onpointerup={reset}>
@@ -53,7 +53,6 @@
         </button>
     </IconContext>
 </div>
-<p>Speed: {speed}x</p>
 
 <style>
     button {

@@ -12,7 +12,9 @@
     });
 </script>
 
-<div>
+<div
+    class="min-w-100 flex items-center flex-col gap-10 rounded-xl bg-gray-800 p-8 m-5"
+>
     <VinylRecord {controller} bind:speed img="https://picsum.photos/200" />
     <PlaybackControls {controller} bind:speed />
 </div>

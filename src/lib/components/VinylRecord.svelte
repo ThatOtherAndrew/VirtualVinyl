@@ -130,7 +130,7 @@
     });
 </script>
 
-<div class="contain-layout">
+<div class="w-full">
     <div
         onpointerdown={startDrag}
         onpointerup={endDrag}
